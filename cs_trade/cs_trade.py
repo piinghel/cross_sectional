@@ -74,19 +74,20 @@ def compute_signal(
     else:
         raise ValueError(f"format should be 'wide' or 'long'")
     
-def visualize_signal_time(df_wide:pd.DataFrame, title: str="signal/bin", xlab: str="Date", ylab: str="Instruments", **kwargs):
+def visualize_signal_time(df_wide:pd.DataFrame, title: str="signal/bin", xlab: str="Date", ylab: str="Instruments", height: int=600, width: int=1000, **kwargs):
     """
     """
     fig = go.Figure(data=go.Heatmap(
     colorbar={"title": title},
     z=df_wide.T.values,
     x=df_wide.index.strftime('%Y-%m-%d'),
-    y=df_wide.columns, 
-        **kwargs))
+    y=df_wide.columns))
 
     fig.update_layout(
         xaxis_title=xlab,
         yaxis_title=ylab,
+        height=height,
+        width=width,
         **kwargs
         )
     return fig
@@ -101,9 +102,9 @@ def merge_ret_signal(ret: pd.DataFrame, signal: pd.DataFrame, on: str="same_date
     signal = signal.copy().reset_index()
     if on == "same_date":
         return (ret
-        .merge(signal, on=["date", "variable"], how="left")
-        .set_index("date")
-        .sort_values(by=["date", "signal_raw"])
+            .merge(signal, on=["date", "variable"], how="left")
+            .sort_values(by=["date", "signal_raw"])
+            .set_index("date")
         )
     elif on == "week_year":
         ret["week"] = ret.date.dt.week
@@ -111,8 +112,9 @@ def merge_ret_signal(ret: pd.DataFrame, signal: pd.DataFrame, on: str="same_date
         signal["week"] = signal.date.dt.week
         signal["year"] = signal.date.dt.year
         return (ret
-            .merge(signal[["week", "year", "variable", "bin"]], on=["week", "year", "variable"], how="right")
-            .set_index("date").sort_values(by=["date", "signal_raw"])
+            .merge(signal, on=["week", "year", "variable"], how="right")
+            .sort_values(by=["date", "signal_raw"])
+            .set_index("date")
         )
     elif on == "month_year":
         ret["month"] = ret.date.dt.month
@@ -120,9 +122,9 @@ def merge_ret_signal(ret: pd.DataFrame, signal: pd.DataFrame, on: str="same_date
         signal["month"] = signal.date.dt.month
         signal["year"] = signal.date.dt.year
         return (ret
-            .merge(ret[["month", "year", "variable", "bin"]], on=["month", "year", "variable"], how="right")
-            .set_index("date")
+            .merge(signal, on=["month", "year", "variable"], how="right")
             .sort_values(by=["date", "signal_raw"])
+            .set_index("date")
         )
     else:
         raise ValueError("on can only take values: date, week_year, month_year")
