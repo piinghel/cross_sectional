@@ -285,7 +285,18 @@ def compute_cumsum(df: pd.DataFrame, input_format: str=None, output_format: str=
         raise ValueError("output_format can only take long or wide")
 
     
-def visualize_returns_series_bin(ret: pd.DataFrame, input_format: str=None, target_vol: float=0.05/np.sqrt(52), x: str="date", y: str="cum_ret", color: str="signal_bin", xlab: str="Date", ylab: str="Cum sum return", **kwargs):
+def visualize_returns_series_bin(
+    ret: pd.DataFrame,
+    input_format: str=None,
+    target_vol: float=0.05/np.sqrt(52),
+    x: str="date", 
+    y: str="cum_ret", 
+    color: str="signal_bin", 
+    xlab: str="Date", 
+    ylab: str="Cum sum return",
+    height: int=600,
+    width: int=800, 
+    **kwargs):
     """
     """
     
@@ -303,7 +314,9 @@ def visualize_returns_series_bin(ret: pd.DataFrame, input_format: str=None, targ
         cum_ret_long.reset_index(),
         x=x,
         y=y,
-        color=color
+        color=color,
+        height=height,
+        width=width
     )
     fig.update_layout(
         xaxis_title=xlab,
@@ -339,7 +352,14 @@ def compute_performance_statistics(df: pd.DataFrame, func_dict):
     return perf 
 
 
-def plot_performance_statistics(df: pd.DataFrame, x: str="Bin", y: str="Value", color: str="Statistic", width=800, **kwargs):
+def plot_performance_statistics(
+    df: pd.DataFrame,
+    x: str="Bin",
+    y: str="Value",
+    color: str="Statistic",
+    height: int=800, 
+    width: int=800,
+    **kwargs):
     """
     """ 
     fig = px.bar(
@@ -351,7 +371,8 @@ def plot_performance_statistics(df: pd.DataFrame, x: str="Bin", y: str="Value", 
         color=color, 
         facet_row_spacing=0.075,
         facet_col_spacing=0.075,
-        **kwargs
+        height=height,
+        width=width,
     )
 
     nr_bin = len(df[x].unique()) + 1
@@ -363,7 +384,7 @@ def plot_performance_statistics(df: pd.DataFrame, x: str="Bin", y: str="Value", 
     fig.update_layout(
         showlegend=False,
         autosize=False,
-        plot_bgcolor="rgb(240, 240, 240)"
+        **kwargs
     )
     return fig 
 
