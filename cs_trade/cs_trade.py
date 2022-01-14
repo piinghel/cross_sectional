@@ -113,7 +113,7 @@ def merge_ret_signal(ret: pd.DataFrame, signal: pd.DataFrame, on: str="same_date
         signal["week"] = signal.date.dt.isocalendar().week
         signal["year"] = signal.date.dt.year
         return (ret
-            .merge(signal[signal.columns != 'date'], on=["week", "year", "variable"], how="right")
+            .merge(signal.loc[:, signal.columns != 'date'], on=["week", "year", "variable"], how="right")
             .sort_values(by=["date", "signal_raw"])
             .set_index("date")
             .loc[:, ["variable", "signal_raw", "signal_bin", "ret"]]
@@ -124,7 +124,7 @@ def merge_ret_signal(ret: pd.DataFrame, signal: pd.DataFrame, on: str="same_date
         signal["month"] = signal.date.dt.month
         signal["year"] = signal.date.dt.year
         return (ret
-            .merge(signal[signal.columns != 'date'], on=["month", "year", "variable"], how="right")
+            .merge(signal.loc[:, signal.columns != 'date'], on=["month", "year", "variable"], how="right")
             .sort_values(by=["date", "signal_raw"])
             .set_index("date")
             .loc[:, ["variable", "signal_raw", "signal_bin", "ret"]]
