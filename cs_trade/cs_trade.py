@@ -19,7 +19,7 @@ def impute_missing_data(df: pd.DataFrame):
 
 def make_bins(df: pd.DataFrame, equal_bins: bool, nr_bins: int):
     if equal_bins:
-        df += np.random.normal(0, 10e5, df.shape[0] * df.shape[1]).reshape(df.shape[0], df.shape[1])
+        df += np.random.normal(0, 1e-5, df.shape[0] * df.shape[1]).reshape(df.shape[0], df.shape[1])
         return df.apply(lambda x: pd.qcut(x, nr_bins, labels=False), axis=1) + 1
     else:
         return df.apply(lambda x: pd.cut(x, nr_bins, labels=False), axis=1) + 1
@@ -58,8 +58,7 @@ def compute_signal(
     equal_bins: bool=True,
     impute_missing_values: bool=True,
     output_format :str="long",
-    keep_raw_signal: bool=True) -> pd.DataFrame:
-    
+    keep_raw_signal: bool=True) -> pd.DataFrame:   
     """
     """
     signal_wide = signal_make_bins(df, nr_bins, equal_bins, impute_missing_values)
@@ -395,8 +394,7 @@ def plot_performance_statistics(
 
 def compute_long_short_portfolio(df, long_bin :list, short_bin: list, weight_func, **kwargs):
     """
-    """
-    
+    """   
     df_long = df[df['signal_bin'].isin(long_bin)]
     df_short = df[df['signal_bin'].isin(short_bin)]
     # apply weighting
